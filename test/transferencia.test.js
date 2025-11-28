@@ -1,22 +1,14 @@
 const mocha = require("mocha");
 const { expect } = require("chai");
 const request = require("supertest");
-require('dotenv').config();
+require("dotenv").config();
+const autenticacao = require("../helpers/autenticacao");
 
 describe("Transferências", () => {
   describe("POST /transferencias", () => {
     it("Deve retornar 201 quando a transferência for acima de R$10,00", async () => {
       // Capturando o token de autenticação
-      const respostaLogin = await request(process.env.BASE_URL)
-        .post("/login") // Substitua pela URL correta do seu servidor
-        .set("Content-Type", "application/json") // Define o cabeçalho Content-Type
-        .send({
-          username: "gustavo",
-          senha: "123456",
-        });
-      expect(respostaLogin.status).to.equal(200);
-      expect(respostaLogin.body.token).to.be.a("string");
-      const token = respostaLogin.body.token;
+      const token = await autenticacao.obterToken();
 
       const resposta = await request(process.env.BASE_URL)
         .post("/transferencias")
@@ -33,16 +25,8 @@ describe("Transferências", () => {
     });
 
     it("Deve retornar 422 quando a transferência for abaixo de R$10,00", async () => {
-        const respostaLogin = await request(process.env.BASE_URL)
-        .post("/login") // Substitua pela URL correta do seu servidor
-        .set("Content-Type", "application/json") // Define o cabeçalho Content-Type
-        .send({
-          username: "gustavo",
-          senha: "123456",
-        });
-      expect(respostaLogin.status).to.equal(200);
-      expect(respostaLogin.body.token).to.be.a("string");
-      const token = respostaLogin.body.token;
+      // Capturando o token de autenticação
+      const token = await autenticacao.obterToken();
 
       const resposta = await request(process.env.BASE_URL)
         .post("/transferencias")
@@ -57,6 +41,5 @@ describe("Transferências", () => {
       expect(resposta.status).to.equal(422);
       console.log(resposta.body);
     });
-
   });
 });
