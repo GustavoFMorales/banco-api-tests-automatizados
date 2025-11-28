@@ -1,12 +1,13 @@
 const mocha = require("mocha");
 const { expect } = require("chai");
 const request = require("supertest");
+require('dotenv').config();
 
 describe("Transferências", () => {
   describe("POST /transferencias", () => {
     it("Deve retornar 201 quando a transferência for acima de R$10,00", async () => {
       // Capturando o token de autenticação
-      const respostaLogin = await request("http://localhost:3000")
+      const respostaLogin = await request(process.env.BASE_URL)
         .post("/login") // Substitua pela URL correta do seu servidor
         .set("Content-Type", "application/json") // Define o cabeçalho Content-Type
         .send({
@@ -17,7 +18,7 @@ describe("Transferências", () => {
       expect(respostaLogin.body.token).to.be.a("string");
       const token = respostaLogin.body.token;
 
-      const resposta = await request("http://localhost:3000")
+      const resposta = await request(process.env.BASE_URL)
         .post("/transferencias")
         .set("Content-Type", "application/json")
         .set("Authorization", `Bearer ${token}`) // Adiciona o token no cabeçalho Authorization
@@ -32,7 +33,7 @@ describe("Transferências", () => {
     });
 
     it("Deve retornar 422 quando a transferência for abaixo de R$10,00", async () => {
-        const respostaLogin = await request("http://localhost:3000")
+        const respostaLogin = await request(process.env.BASE_URL)
         .post("/login") // Substitua pela URL correta do seu servidor
         .set("Content-Type", "application/json") // Define o cabeçalho Content-Type
         .send({
@@ -43,7 +44,7 @@ describe("Transferências", () => {
       expect(respostaLogin.body.token).to.be.a("string");
       const token = respostaLogin.body.token;
 
-      const resposta = await request("http://localhost:3000")
+      const resposta = await request(process.env.BASE_URL)
         .post("/transferencias")
         .set("Content-Type", "application/json")
         .set("Authorization", `Bearer ${token}`) // Adiciona o token no cabeçalho Authorization
