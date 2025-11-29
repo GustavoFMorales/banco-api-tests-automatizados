@@ -6,10 +6,12 @@ const autenticacao = require("../helpers/autenticacao");
 
 describe("Transferências", () => {
   describe("POST /transferencias", () => {
+    let token;
+    beforeEach(async () => {
+       token = await autenticacao.obterToken();
+    });
     it("Deve retornar 201 quando a transferência for acima de R$10,00", async () => {
       // Capturando o token de autenticação
-      const token = await autenticacao.obterToken();
-
       const resposta = await request(process.env.BASE_URL)
         .post("/transferencias")
         .set("Content-Type", "application/json")
@@ -26,8 +28,6 @@ describe("Transferências", () => {
 
     it("Deve retornar 422 quando a transferência for abaixo de R$10,00", async () => {
       // Capturando o token de autenticação
-      const token = await autenticacao.obterToken();
-
       const resposta = await request(process.env.BASE_URL)
         .post("/transferencias")
         .set("Content-Type", "application/json")
